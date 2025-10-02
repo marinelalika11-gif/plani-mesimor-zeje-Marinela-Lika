@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plani Mësimor: Zeje Tradicionale</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Ngjyrat tradicionale: E Kuqja e thellë (#B70F0A), Ari (#E9B523), E Zeza e thellë (#151515) */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F4E8; /* Light warm base */
+            color: #151515;
+
+            /* Krijimi i një sfondi me figura gjeometrike tipike shqiptare (diamant/zigzag) */
+            background-image: 
+                linear-gradient(30deg, #F0EAD6 12%, transparent 12.5%, transparent 87.5%, #F0EAD6 88%),
+                linear-gradient(150deg, #F0EAD6 12%, transparent 12.5%, transparent 87.5%, #F0EAD6 88%),
+                linear-gradient(30deg, #F0EAD6 12%, transparent 12.5%, transparent 87.5%, #F0EAD6 88%),
+                linear-gradient(150deg, #F0EAD6 12%, transparent 12.5%, transparent 87.5%, #F0EAD6 88%);
+            background-size: 80px 80px; /* Madhësia e motivit */
+            background-position: 0 0, 0 0, 40px 40px, 40px 40px; /* Kompensim për të krijuar përsëritje */
+        }
+        .main-text-color {
+            color: #151515;
+        }
+        .accent-red {
+            color: #B70F0A;
+        }
+        .accent-gold {
+            color: #E9B523;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 40vh;
+        }
+        /* Stilizimi i Kalendarit (Timeline) me ngjyra tradicionale */
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 24px;
+            left: -20px;
+            width: 2px;
+            height: 100%;
+            background-color: #B70F0A; /* E kuqe tradicionale */
+        }
+        .timeline-item:last-child::before {
+            display: none;
+        }
+        .timeline-dot {
+            position: absolute;
+            top: 24px;
+            left: -28px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: #E9B523; /* Ari/Gold */
+            border: 3px solid #B70F0A; 
+        }
+        .view-plan-button {
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .view-plan-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        /* Stilizimi i Përmbajtjes që hapet/mbyllet */
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out;
+        }
+        .collapsible-content.open {
+            max-height: 1000px;
+            padding-top: 1rem;
+        }
+    </style>
+</head>
+<body class="main-text-color">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+
+        <header class="text-center mb-6">
+            <h1 class="text-4xl md:text-5xl font-black main-text-color uppercase tracking-wider">Infografik i Planit Mësimor</h1>
+            <p class="text-xl md:text-2xl font-light accent-red mt-2">Udhëtim Artistik në Zejet dhe Artet Tradicionale</p>
+        </header>
+        
+        <!-- INFORMACIONI I MËSUESIT DHE SHKOLLËS -->
+        <div class="text-center mb-10 text-lg font-semibold main-text-color p-3 bg-white rounded-lg shadow-xl border-b-4 border-dashed border-[#E9B523]">
+            <p>Mësuesi: <span class="accent-red font-bold">Marinela Lika</span></p>
+            <p>Shkolla: <span class="accent-gold font-bold">Demokracia</span></p>
+        </div>
+        
+        <!-- Seksioni i Statistikave -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center mb-16">
+            <div class="bg-white p-6 rounded-lg shadow-xl border-t-4 border-[#B70F0A]"> <!-- E Kuqe e thellë -->
+                <p class="text-5xl font-black text-[#B70F0A]">35</p>
+                <p class="text-lg font-semibold mt-2">Javë Mësimi</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-xl border-t-4 border-[#E9B523]"> <!-- Ari -->
+                <p class="text-5xl font-black text-[#E9B523]">140</p>
+                <p class="text-lg font-semibold mt-2">Orë Totale</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-xl border-t-4 border-[#06D6A0]"> <!-- Gjelbër (Për kontrast) -->
+                <p class="text-5xl font-black text-[#06D6A0]">8</p>
+                <p class="text-lg font-semibold mt-2">Projekte Kryesore</p>
+            </div>
+        </section>
+
+        <!-- Seksioni i Kalendarit të Projekteve -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8 main-text-color">Kalendari i Projekteve Mujore</h2>
+            <div class="relative pl-8" id="timeline-container">
+                <!-- Projektet do të renditen këtu nga JavaScript -->
+            </div>
+        </section>
+
+        <!-- Seksioni i Shpërndarjes së Aftësive (Grafiku) -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center mb-16">
+            <div class="bg-white p-6 md:p-8 rounded-lg shadow-xl order-2 md:order-1">
+                <h2 class="text-3xl font-bold text-center mb-2 main-text-color">Shpërndarja e Aftësive</h2>
+                <p class="text-center text-gray-600 mb-6">Ky grafik tregon ndarjen e përafërt të 140 orëve mësimore sipas kategorive kryesore të zejeve.</p>
+                <div class="text-sm text-gray-500">
+                    <p><span class="font-bold text-[#B70F0A]">■</span> Qëndisje (~45%): Përvetësimi i teknikave të ndryshme.</p>
+                    <p><span class="font-bold text-[#06D6A0]">■</span> Pikturim (~35%): Aplikimi i pikturës në sipërfaqe.</p>
+                    <p><span class="font-bold text-[#E9B523]">■</span> Arte të Aplikuara (~20%): Punime me tel, mozaikë dhe ripërdorim.</p>
+                </div>
+            </div>
+            <div class="order-1 md:order-2">
+                <div class="chart-container">
+                    <canvas id="skillsChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seksioni i Fazës Finale -->
+        <section class="bg-white p-6 md:p-8 rounded-lg shadow-xl border-2 border-[#B70F0A]">
+             <h2 class="text-3xl font-bold text-center mb-8 main-text-color">Nga Klasa në Ekspozitë: Faza Finale</h2>
+            <div class="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-0">
+                <div class="text-center p-4">
+                    <div class="bg-[#F8F4E8] rounded-full w-24 h-24 flex items-center justify-center mx-auto border-2 border-[#E9B523]">
+                        <p class="text-4xl">📝</p>
+                    </div>
+                    <h3 class="font-bold mt-3">Rishikim & Portofol</h3>
+                    <p class="text-sm text-gray-600">(Prill - Maj)</p>
+                </div>
+                <div class="text-3xl font-light accent-red mx-4 hidden md:block">→</div>
+                 <div class="text-3xl font-light accent-red my-2 md:hidden">↓</div>
+                <div class="text-center p-4">
+                    <div class="bg-[#F8F4E8] rounded-full w-24 h-24 flex items-center justify-center mx-auto border-2 border-[#06D6A0]">
+                        <p class="text-4xl">🖼️</p>
+                    </div>
+                    <h3 class="font-bold mt-3">Përgatitja e Ekspozitës</h3>
+                     <p class="text-sm text-gray-600">(Maj)</p>
+                </div>
+                 <div class="text-3xl font-light accent-red mx-4 hidden md:block">→</div>
+                 <div class="text-3xl font-light accent-red my-2 md:hidden">↓</div>
+                <div class="text-center p-4">
+                    <div class="bg-[#F8F4E8] rounded-full w-24 h-24 flex items-center justify-center mx-auto border-2 border-[#B70F0A]">
+                        <p class="text-4xl">🏆</p>
+                    </div>
+                    <h3 class="font-bold mt-3">Prezantimi Final</h3>
+                     <p class="text-sm text-gray-600">(Qershor)</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center mt-12 py-6 border-t border-[#B70F0A]">
+            <p class="text-gray-600">Infografik i bazuar në "Plan Mësimor i Thjeshtuar: Qëndisje & Pikturim Tradicional".</p>
+        </footer>
+    </div>
+
+<script>
+    
+    // Të dhënat e detajuara të kurrikulës
+    const CurriculumData = [
+        {
+            id: 1,
+            month: 'SHTATOR',
+            title: 'Projekti 1: Baza & Qëndisja Kryq 🧵',
+            description: 'Nxënësit mësojnë teknikën themelore të qëndisjes, qepjen kryq, duke krijuar mostra dhe shiritin e parë dekorativ.',
+            historical_link: 'Simbolet mbrojtëse të përdorura në veshjet Ilire.',
+            color: '#B70F0A', // E Kuqe Tradicionale
+            plan: [
+                { week: 1, topic: 'Hyrje: Mjetet, llojet e pëlhurave, pregatitja e tyre.' },
+                { week: 2, topic: 'Teknika bazë: Qepja Kryq (X). Modele të thjeshta gjeometrike.' },
+                { week: 3, topic: 'Simbolika Ilire: Motive mbrojtëse (Dielli, Gjarpri) dhe aplikimi i tyre.' },
+                { week: 4, topic: 'Projekti Final: Krijimi i një shiriti dekorativ me motive të mësuara.' }
+            ]
+        },
+        {
+            id: 2,
+            month: 'TETOR - NËNTOR',
+            title: 'Projekti 2 & 3: Motivet Popullore 🌼',
+            description: 'Kursi thellohet në motive gjeometrike dhe florale, duke përdorur teknika të reja si qepja zinxhir për të krijuar një kuadrat dhe një aksesor të vogël.',
+            historical_link: 'Identiteti rajonal përmes motiveve dhe simbolika e luleve në kulturën tradicionale.',
+            color: '#E9B523', // Ari
+            plan: [
+                { week: 5, topic: 'Motivet Gjeometrike: Përdorimi i fijeve për simetri dhe saktësi.' },
+                { week: 6, topic: 'Qepja Zinxhir dhe e Mbushur: Mësimi i teknikave për mbushje të plotë.' },
+                { week: 7, topic: 'Simbolika e Luleve: Interpretimi i luleve të ndryshme (tulipan, manushaqe) në qëndisje.' },
+                { week: 8, topic: 'Projekti: Dizajnimi dhe krijimi i kuadratit me motive florale.' },
+                { week: 9, topic: 'Identiteti Rajonal: Motive nga Shkodra, Mirdita, Kosova dhe ndryshimet e tyre.' },
+                { week: 10, topic: 'Dizajnimi i Aksesorit: Planifikimi i një varese ose byzylyku të vogël.' },
+                { week: 11, topic: 'Puna me Bordurë: Përfundimi i qëndisjes në aksesor.' },
+                { week: 12, topic: 'Përfundimi dhe Mirëmbajtja: Shtrëngimi, larja, ruajtja e produkteve.' }
+            ]
+        },
+        {
+            id: 3,
+            month: 'DHJETOR - JANAR',
+            title: 'Projekti 4 & 5: Pikturim në Dru & Gur 🎨',
+            description: 'Fokusi kalon te piktura. Nxënësit përgatisin dhe pikturojnë motive popullore në pllaka druri dhe motive ikonografike në gurë të sheshtë.',
+            historical_link: 'Artizanati në shtëpitë e vjetra dhe trashëgimia e Onufrit në ikonografi.',
+            color: '#06D6A0',
+            plan: [
+                { week: 13, topic: 'Pregatitja e Drurit: Lëmimi, lyerja me bazë dhe kalimi i dizajnit.' },
+                { week: 14, topic: 'Pikturimi në Dru: Përdorimi i ngjyrave akrilike dhe i detajeve popullore.' },
+                { week: 15, topic: 'Hyrje në Ikonografi: Onufri dhe stili i pikturimit. Rregullat e artit bizantin.' },
+                { week: 16, topic: 'Guri si Kanavacë: Zgjedhja dhe pastrimi i gurëve të sheshtë natyrorë.' },
+                { week: 17, topic: 'Teknika e Ikonës: Skicimi dhe shtresat e para të ngjyrës (proplasmi).' },
+                { week: 18, topic: 'Drita dhe Hijet: Detajet me ar dhe hijezimi i fytyrave.' },
+                { week: 19, topic: 'Veshjet dhe Sfondi: Përfundimi i detajeve të ikonës.' },
+                { week: 20, topic: 'Mbrojtja: Fiksimi me llak dhe ekspozimi i punimeve.' }
+            ]
+        },
+        {
+            id: 4,
+            month: 'SHKURT - MARS',
+            title: 'Projekti 6 & 7: Mini-Zeje & Ripërdorim 🔗',
+            description: 'Eksplorimi i zejeve të tjera: punohet teli i bakrit për të krijuar stoli të thjeshta (mini-filigran) dhe realizohet një mozaik me letër të ricikluar.',
+            historical_link: 'Tradita e filigranit në Shkodër dhe mozaikët e lashtë të Butrintit.',
+            color: '#118AB2',
+            plan: [
+                { week: 21, topic: 'Filigrani i Thjeshtë: Mjetet dhe puna me telin e bakrit. Forma bazë spirale.' },
+                { week: 22, topic: 'Krijimi i Stolive: Përdorimi i pincave për të krijuar vathë ose varëse të thjeshta.' },
+                { week: 23, topic: 'Mozaikët e Butrintit: Njohje me historinë dhe elementët themelorë (tesserae).' },
+                { week: 24, topic: 'Riciklimi i Letrës: Krijimi i "tesserae" nga letra me ngjyra dhe gazetat.' },
+                { week: 25, topic: 'Dizajni i Mozaikut: Skicimi i figurës mbi bazë dhe ndarja e ngjyrave.' },
+                { week: 26, topic: 'Aplikimi: Ngjitja e pjesëve të letrës (tesserae) në modelin e vizatuar.' },
+                { week: 27, topic: 'Finalizimi: Mbushja e hapësirave të vogla dhe fiksimi i mozaikut.' },
+                { week: 28, topic: 'Prezantimi: Ekspozimi i punimeve si mjetet e riciklimit.' }
+            ]
+        }
+    ];
+    
+    // Funksioni për renderimin e të dhënave të kurrikulës në HTML
+    function renderCurriculum() {
+        const container = document.getElementById('timeline-container');
+        container.innerHTML = ''; 
+
+        CurriculumData.forEach(project => {
+            // Krijimi i HTML për planin e orëve (fillimisht i fshehur)
+            const planHtml = project.plan.map(item => `
+                <li class="p-2 border-b border-gray-200 last:border-b-0 flex justify-between items-center text-left">
+                    <span class="font-medium main-text-color w-1/4">Java ${item.week}:</span>
+                    <span class="text-gray-700 w-3/4">${item.topic}</span>
+                </li>
+            `).join('');
+
+            const projectHtml = `
+                <div class="timeline-item relative pb-10">
+                    <div class="timeline-dot"></div>
+                    <div class="bg-white p-6 rounded-lg shadow-xl border-l-4" style="border-left-color: ${project.color};">
+                        <p class="text-sm font-semibold" style="color: ${project.color};">${project.month}</p>
+                        <h3 class="text-xl font-bold mt-1 main-text-color">${project.title}</h3>
+                        <p class="mt-2 text-gray-700">${project.description}</p>
+                        <p class="text-sm mt-3 font-semibold accent-red">Lidhja Historike: ${project.historical_link}</p>
+                        
+                        <div class="flex flex-col md:flex-row gap-2 mt-4">
+                            <!-- Butoni për të shfaqur/fshehur planin e orëve -->
+                             <button 
+                                onclick="toggleCurriculum(${project.id})" 
+                                class="view-plan-button flex items-center justify-center bg-[#151515] text-white text-sm px-4 py-2 rounded-full hover:bg-[#B70F0A]"
+                                id="plan-button-${project.id}"
+                            >
+                                <span class="text-lg mr-1">📚</span> Shiko Planin e Orëve
+                            </button>
+                        </div>
+
+                        <!-- Zona e Collapsible-t të Kurrikulës -->
+                        <div id="curriculum-${project.id}" class="collapsible-content bg-gray-50 mt-4 border border-gray-300 rounded-lg">
+                            <h4 class="font-bold text-lg text-center p-3 bg-gray-100 border-b border-gray-300">Plani i Detajuar i Orëve</h4>
+                            <ul class="p-2 md:p-4 text-sm">
+                                ${planHtml}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', projectHtml);
+        });
+    }
+
+    // Funksioni për menaxhimin e hapjes/mbylljes së planit të orëve
+    function toggleCurriculum(projectId) {
+        const content = document.getElementById(`curriculum-${projectId}`);
+        const button = document.getElementById(`plan-button-${projectId}`);
+
+        if (content.classList.contains('open')) {
+            // Mbyll
+            content.classList.remove('open');
+            button.innerHTML = '<span class="text-lg mr-1">📚</span> Shiko Planin e Orëve';
+        } else {
+            // Hap
+            content.classList.add('open');
+            button.innerHTML = '<span class="text-lg mr-1">📖</span> Fsheh Planin e Orëve';
+        }
+    }
+
+    // Inicializimi i Chart.js dhe renderimi i kurrikulës
+    document.addEventListener('DOMContentLoaded', function () {
+        renderCurriculum(); 
+        
+        const tooltipTitleCallback = {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            return Array.isArray(label) ? label.join(' ') : label;
+                        }
+                    }
+                },
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 20,
+                        color: '#151515' // Ngjyra e legjendës
+                    }
+                }
+            }
+        };
+
+        const ctx = document.getElementById('skillsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Qëndisje (64 orë)', 'Pikturim (48 orë)', 'Arte të Aplikuara (28 orë)'],
+                datasets: [{
+                    label: 'Shpërndarja e Orëve',
+                    data: [64, 48, 28],
+                    backgroundColor: [
+                        '#B70F0A', // E Kuqe
+                        '#06D6A0', // E Gjelbër
+                        '#E9B523', // Ari/Gold
+                    ],
+                    borderColor: '#FFFFFF',
+                    borderWidth: 4,
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%',
+                ...tooltipTitleCallback
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
